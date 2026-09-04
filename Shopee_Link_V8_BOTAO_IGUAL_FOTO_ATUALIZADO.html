@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>V4 FINAL - Shopee Link V4</title>
+<style>
+:root{--orange:#ee4d2d;--orange2:#ff5b2e;--bg:#f5f5f5;--text:#222;--muted:#777;--line:#eee;--card:#fff;--green:#18a873}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}
+button,input,textarea{font:inherit}button{cursor:pointer;border:0}.top{height:68px;background:linear-gradient(90deg,#f4431f,#ff5b2e);color:#fff;display:flex;align-items:center;padding:0 28px;gap:26px;position:sticky;top:0;z-index:20;box-shadow:0 2px 8px #0002}
+.logo{font-size:25px;font-weight:700;display:flex;align-items:center;gap:9px}.bag{width:32px;height:32px;border:3px solid #fff;border-radius:5px;display:grid;place-items:center;font-size:19px}.nav{display:flex;gap:28px;font-size:14px}.nav button{background:none;color:#fff}.right{margin-left:auto;display:flex;gap:10px}.pill{background:#fff2;color:#fff;border:1px solid #fff5;padding:8px 12px;border-radius:18px}
+.mobileMenu{display:none;background:#fff2;color:#fff;border:1px solid #fff6;border-radius:7px;font-size:22px;padding:6px 10px}
+.mobileNav{display:none}
+.wrap{max-width:1180px;margin:22px auto;padding:0 16px}.hero{background:#fff;border-radius:10px;padding:20px 22px;margin-bottom:18px;box-shadow:0 1px 5px #00000010}.hero h1{margin:0 0 6px;color:var(--orange);font-size:24px}.hero p{margin:0;color:var(--muted)}
+.grid{display:grid;grid-template-columns:390px 1fr;gap:18px}.card{background:var(--card);border-radius:10px;padding:18px;box-shadow:0 1px 5px #00000010;margin-bottom:18px}.card h2{font-size:18px;color:var(--orange);margin:0 0 15px}.step{font-weight:700;color:var(--orange);font-size:14px;margin:16px 0 8px}
+input,textarea{width:100%;border:1px solid #ddd;border-radius:6px;padding:11px 12px;outline:none;background:#fff}input:focus,textarea:focus{border-color:var(--orange)}textarea{min-height:70px;resize:vertical}
+.row{display:flex;gap:8px}.row>*{flex:1}.btn{padding:11px 14px;border-radius:6px;font-weight:700}.primary{background:var(--orange);color:#fff}.outline{background:#fff;color:var(--orange);border:1px solid var(--orange)}.danger{background:#fff;color:#d33;border:1px solid #f1b8b8}.small{font-size:12px;color:var(--muted)}
+.products{border:1px solid #eee;border-radius:7px;overflow:hidden}.prod{display:grid;grid-template-columns:62px 1fr auto;gap:12px;align-items:center;padding:10px;border-bottom:1px solid var(--line)}.prod:last-child{border-bottom:0}.thumb{width:62px;height:62px;border-radius:6px;object-fit:cover;background:#f2f2f2}.prod b{font-size:14px}.price{color:var(--orange);font-weight:700;margin-top:5px}.trash{background:none;color:#999;font-size:18px}
+.total{display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding-top:14px;border-top:1px solid #eee}.total strong{font-size:22px;color:var(--orange)}
+.cart{background:#fff;border-radius:10px;box-shadow:0 1px 5px #00000010;overflow:hidden}.cart-head{background:linear-gradient(90deg,#f4431f,#ff5b2e);color:#fff;padding:18px 20px;display:flex;justify-content:space-between;align-items:center}.cart-head h2{margin:0;font-size:21px}.items{padding:0}.item{display:grid;grid-template-columns:88px 1fr auto;gap:16px;padding:17px 20px;border-bottom:1px solid #eee;align-items:center}.item img{width:88px;height:88px;object-fit:cover;border-radius:7px;background:#f5f5f5}.item h3{margin:0 0 7px;font-size:16px}.item p{margin:3px 0;color:#777;font-size:13px}.item .bigprice{color:var(--orange);font-size:17px;font-weight:700}.buybox{padding:18px 20px}.notice{background:#fff8e8;border:1px solid #ffd98c;color:#72530b;border-radius:7px;padding:12px 13px;font-size:13px;line-height:1.45;margin-bottom:13px}.buy{width:100%;background:var(--orange);color:#fff;padding:14px;border-radius:6px;font-weight:700;font-size:16px}.cartlist{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.saved{background:#fff;border-radius:9px;padding:14px;box-shadow:0 1px 5px #0001}.saved h3{margin:0 0 7px}.saved .mini{display:flex;gap:7px;margin:10px 0}.mini img{width:45px;height:45px;border-radius:5px;object-fit:cover}.saved .sum{color:var(--orange);font-weight:700}.saved .actions{display:flex;gap:7px;margin-top:12px}.saved .actions button{flex:1;padding:9px;border-radius:5px}
+.creatorSaved{border:1px solid #eee;border-radius:8px;padding:12px;margin-top:10px;background:#fff}
+.creatorSavedTop{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.creatorSavedTitle{font-weight:700;font-size:15px}
+.creatorSavedMeta{font-size:12px;color:#888;margin-top:4px}
+.creatorSavedProducts{display:flex;gap:6px;overflow-x:auto;padding:9px 0}
+.creatorSavedProducts img{width:52px;height:52px;object-fit:cover;border-radius:6px;flex:0 0 auto}
+.creatorSavedButtons{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:7px}
+.creatorSavedButtons button{padding:10px;border-radius:6px;font-weight:700}
+.editingBadge{display:inline-block;background:#fff2ed;color:var(--orange);padding:5px 8px;border-radius:12px;font-size:11px;font-weight:700;margin-left:6px}
+
+.login{min-height:calc(100vh - 68px);display:grid;place-items:center;padding:25px}.loginbox{width:min(410px,100%);background:#fff;border-radius:12px;padding:28px;box-shadow:0 4px 18px #0002}.loginbox h1{color:var(--orange);margin-top:0}.loginbox .field{margin:12px 0}.err{color:#c62828;background:#ffebee;padding:9px;border-radius:6px;font-size:13px;display:none}
+.public-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.badge{background:#fff1ed;color:var(--orange);padding:7px 10px;border-radius:16px;font-size:12px;font-weight:700}
+.hidden{display:none!important}.empty{text-align:center;padding:40px;color:#888}.footer{text-align:center;color:#888;padding:30px;font-size:12px}
+@media(max-width:850px){.grid{grid-template-columns:1fr}.cartlist{grid-template-columns:1fr}.nav{display:none}.top{padding:0 14px}.item{grid-template-columns:70px 1fr}.item .bigprice{grid-column:2}.right{display:none}}
+
+.creator-menu-btn{position:fixed;top:12px;right:12px;z-index:9999;width:42px;height:42px;border:0;border-radius:50%;background:#fff;color:#ee4d2d;font-size:30px;line-height:1;box-shadow:0 2px 10px #0002;cursor:pointer}.creator-menu{position:fixed;top:60px;right:12px;z-index:9998;background:#fff;border-radius:12px;padding:10px;box-shadow:0 5px 20px #0003}.creator-menu .btn{white-space:nowrap}.hidden{display:none!important}
+</style>
+
+<style>
+/* Botão Comprar na Shopee — design premium */
+.buy-link{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  gap:10px;
+  width:100%;
+  min-height:52px;
+  margin-top:14px;
+  padding:0 18px;
+  border-radius:12px;
+  background:linear-gradient(135deg,#ee4d2d 0%,#ff6a3d 100%);
+  color:#fff !important;
+  text-decoration:none !important;
+  font-weight:800;
+  font-size:16px;
+  letter-spacing:.1px;
+  box-shadow:0 6px 16px rgba(238,77,45,.24);
+  transition:transform .16s ease,box-shadow .16s ease,filter .16s ease;
+  -webkit-tap-highlight-color:transparent;
+}
+.buy-link:hover{
+  transform:translateY(-1px);
+  box-shadow:0 9px 20px rgba(238,77,45,.30);
+  filter:brightness(1.03);
+}
+.buy-link:active{
+  transform:translateY(1px) scale(.99);
+  box-shadow:0 4px 10px rgba(238,77,45,.20);
+}
+.buy-link .buy-icon{
+  width:30px;height:30px;
+  display:grid;place-items:center;
+  border-radius:9px;
+  background:rgba(255,255,255,.18);
+  font-size:17px;
+}
+.buy-link.disabled{
+  pointer-events:none;
+  opacity:.45;
+  filter:grayscale(.2);
+  box-shadow:none;
+}
+@media(max-width:520px){
+  .buy-link{min-height:54px;border-radius:11px}
+}
+</style>
+
+
+<style>
+/* Botões dos carrinhos: exatamente iguais em tamanho e alinhamento */
+.saved .actions{
+  display:flex;
+  gap:10px;
+  margin-top:14px;
+}
+.saved .actions button,
+.saved .actions .buy-action{
+  flex:1;
+  min-width:0;
+  height:60px;
+  padding:0 10px;
+  border-radius:7px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  text-decoration:none !important;
+  font-size:18px;
+  font-weight:700;
+  line-height:1.15;
+}
+.saved .actions .buy-action{
+  background:#ee4d2d;
+  color:#fff !important;
+  border:1px solid #ee4d2d;
+  box-shadow:none;
+  margin:0;
+}
+.saved .actions .buy-action:hover,
+.saved .actions .buy-action:focus{
+  background:#ee4d2d;
+  color:#fff !important;
+  transform:none;
+  filter:none;
+  box-shadow:none;
+}
+.saved .actions .buy-action:active{
+  transform:scale(.99);
+}
+@media(max-width:520px){
+  .saved .actions{gap:10px}
+  .saved .actions button,
+  .saved .actions .buy-action{
+    height:60px;
+    font-size:18px;
+  }
+}
+</style>
+
+</head>
+<body>
+<header class="top">
+  <div class="logo"><span class="bag">S</span> Shopee Link</div>
+  <nav class="nav">
+    <button onclick="showBuyer()">Início</button>
+    <button onclick="showCreator()">🔐 Criador</button>
+    <button onclick="showBuyer()">Meus Carrinhos</button>
+    <button onclick="showHelp()">Tutorial</button>
+  </nav>
+  <button class="mobileMenu" onclick="toggleMobileMenu()" aria-label="Abrir menu">☰</button>
+  <div class="right"><span class="pill">🔔</span><span class="pill">Minha Conta</span></div>
+</header>
+<div id="mobileNav" class="mobileNav">
+  <button onclick="showBuyer();closeMobileMenu()">🏠 Início</button>
+  <button onclick="showCreator();closeMobileMenu()">🔐 Área do Criador</button>
+  <button onclick="showBuyer();closeMobileMenu()">🛒 Meus Carrinhos</button>
+  <button onclick="showHelp();closeMobileMenu()">❓ Tutorial</button>
+</div>
+
+<section id="loginView" class="login hidden">
+  <div class="loginbox">
+    <h1>Área do criador</h1>
+    <p class="small">Entre para criar, alterar ou apagar os carrinhos.</p>
+    <div id="loginErr" class="err">Usuário ou senha incorretos.</div>
+    <div class="field"><label>Usuário</label><input id="user" autocomplete="username" placeholder="Digite o usuário"></div>
+    <div class="field"><label>Senha</label><input id="pass" type="password" autocomplete="current-password" placeholder="Digite a senha"></div>
+    <button class="btn primary" style="width:100%;margin-top:8px" onclick="login()">Entrar</button>
+    <button class="btn outline" style="width:100%;margin-top:9px" onclick="showBuyer()">Voltar para os carrinhos</button>
+  </div>
+</section>
+
+<main id="creatorView" class="wrap hidden">
+  <div class="hero"><h1>CRIAR NOVO CARRINHO</h1><p>Cadastre os produtos, imagens, preços e o link da categoria/vitrine da Shopee.</p><button class="btn outline" style="margin-top:12px" onclick="showBuyer()">← Voltar para os carrinhos</button></div>
+  <div class="grid">
+    <div>
+      <div class="card">
+        <h2>1. DADOS DO CARRINHO</h2>
+        <label class="step">Nome do carrinho</label>
+        <input id="cartName" placeholder="Ex.: Promoção Tech">
+        <label class="step">Link da categoria / vitrine na Shopee</label>
+        <input id="categoryUrl" placeholder="Cole aqui o link da categoria/vitrine">
+        <div class="small" style="margin-top:7px">Esse é o destino do botão “Comprar na Shopee”.</div>
+      </div>
+      <div class="card">
+        <h2>2. ADICIONAR PRODUTO</h2>
+        <label class="step">Nome do produto</label>
+        <input id="prodName" placeholder="Ex.: Fone Bluetooth">
+        <div class="row">
+          <div><label class="step">Preço (R$)</label><input id="prodPrice" inputmode="decimal" placeholder="29,90"></div>
+          <div><label class="step">Quantidade</label><input id="prodQty" type="number" min="1" value="1"></div>
+        </div>
+        <label class="step">Imagem do produto</label>
+        <input id="prodImg" placeholder="Cole a URL da imagem (https://...)">
+        <div class="small" style="margin:7px 0">Use a URL direta da imagem. O protótipo mostra a foto automaticamente.</div>
+        <button class="btn primary" style="width:100%;margin-top:5px" onclick="addProduct()">+ Adicionar produto</button>
+      </div>
+      <div class="card">
+        <h2>3. PRODUTOS ADICIONADOS <span id="count" class="badge">0 itens</span></h2>
+        <div id="creatorProducts" class="products"></div>
+        <div class="total"><span>Total</span><strong id="creatorTotal">R$ 0,00</strong></div>
+        <button class="btn danger" style="width:100%;margin-top:13px" onclick="clearProducts()">🗑 Limpar produtos</button>
+      </div>
+      <div class="card">
+        <h2>4. PUBLICAR</h2>
+        <button class="btn primary" style="width:100%" onclick="saveCart()">Salvar carrinho para os compradores</button>
+        <button id="cancelEditBtn" class="btn outline hidden" style="width:100%;margin-top:9px" onclick="cancelEdit()">Cancelar edição</button>
+        <button class="btn outline" style="width:100%;margin-top:9px" onclick="exportData()">Exportar backup</button>
+        <button class="btn outline" style="width:100%;margin-top:9px" onclick="document.getElementById('importFile').click()">Importar backup</button>
+        <input id="importFile" type="file" accept=".json" class="hidden" onchange="importData(event)">
+
+      <div class="card">
+        <h2>5. CARRINHOS JÁ CRIADOS</h2>
+        <p class="small">Aqui aparecem todos os carrinhos publicados. Somente o criador pode editar ou apagar.</p>
+        <div id="creatorCarts"></div>
+      </div>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <h2>PRÉVIA DO CARRINHO</h2>
+        <div id="creatorPreview" class="cart"></div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><button class="btn outline" onclick="logout()">Sair da área do criador</button></div>
+</main>
+
+<main id="cartDetailView" class="wrap hidden"></main>
+
+<main id="buyerView" class="wrap">
+  <div class="hero public-top">
+    <div><h1>Meus Carrinhos</h1><p>Escolha um carrinho e veja todos os produtos, fotos e o valor total.</p></div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <span class="badge">🛍 Área dos compradores</span>
+      <button class="creator-menu-btn" onclick="toggleCreatorMenu()" aria-label="Menu">⋮</button><div id="creatorMenu" class="creator-menu hidden"><div style="padding:6px 8px 10px;font-size:12px;color:#888;border-bottom:1px solid #eee;margin-bottom:8px">Criador do site: <b style="color:#ee4d2d">@a_shopeebr</b></div><button class="btn outline" onclick="showCreator();toggleCreatorMenu()">🔐 Área do Criador</button></div>
+    </div>
+  </div>
+  <div id="buyerList" class="cartlist"></div>
+  <div class="footer">Shopee Link V4 • Os preços e produtos são informativos.</div>
+</main>
+
+<section id="helpView" class="wrap hidden">
+  <div class="card">
+    <h2>Como funciona</h2>
+    <p><b>1.</b> O criador entra com usuário e senha.</p>
+    <p><b>2.</b> Cadastra o nome do carrinho, link da categoria/vitrine, produtos, fotos, preços e quantidades.</p>
+    <p><b>3.</b> Salva. O carrinho passa a aparecer na área dos compradores.</p>
+    <p><b>4.</b> O comprador escolhe um carrinho e toca em <b>Comprar na Shopee</b>. O sistema tenta abrir o link da Shopee no aplicativo Android; se o aparelho não aceitar o direcionamento para o app, o link da Shopee pode abrir no navegador.</p>
+    <div class="notice">Importante: o site não consegue preencher automaticamente o carrinho privado da conta do comprador nem selecionar vários produtos dentro da Shopee. Por isso, o aviso orienta o comprador a selecionar manualmente os mesmos produtos na categoria/vitrine.</div>
+    <button class="btn primary" onclick="showBuyer()">Voltar</button>
+  </div>
+</section>
+
+<script>
+const CREDS={user:"a_shopeebr",pass:"@AndreXs321"};
+let products=[];
+let carts=JSON.parse(localStorage.getItem("shopeeLinkV4Carts")||"[]");
+
+const money=v=>new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL"}).format(Number(v)||0);
+const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+function parsePrice(s){return Number(String(s).replace(/[^\d,.-]/g,"").replace(/\./g,"").replace(",","."))||0}
+function total(ps){return ps.reduce((a,p)=>a+(Number(p.price)||0)*(Number(p.qty)||1),0)}
+function img(url){return url||"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Crect width='120' height='120' fill='%23f1f1f1'/%3E%3Ctext x='60' y='65' text-anchor='middle' font-size='14' fill='%23999'%3ESem foto%3C/text%3E%3C/svg%3E"}
+
+function closeMobileMenu(){const m=document.getElementById("mobileNav");if(m)m.classList.remove("open")}
+function hideAll(){
+  ["loginView","creatorView","buyerView","cartDetailView","helpView"].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.classList.add("hidden");
+  });
+  closeMobileMenu();
+}
+function showBuyer(){
+  hideAll();
+  document.getElementById("buyerView").classList.remove("hidden");
+  renderBuyer();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function toggleCreatorMenu(){document.getElementById("creatorMenu").classList.toggle("hidden");}
+function showCreator(){
+  hideAll();
+  if(sessionStorage.getItem("slv4_auth")==="1"){
+    document.getElementById("creatorView").classList.remove("hidden");
+    renderCreator();
+  }else{
+    document.getElementById("loginView").classList.remove("hidden");
+    document.getElementById("user").focus();
+  }
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function showHelp(){
+  hideAll();
+  document.getElementById("helpView").classList.remove("hidden");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function toggleMobileMenu(){
+  document.getElementById("mobileNav").classList.toggle("open");
+}
+function login(){
+  const u=document.getElementById("user").value.trim();
+  const p=document.getElementById("pass").value;
+  if(u===CREDS.user && p===CREDS.pass){
+    sessionStorage.setItem("slv4_auth","1");
+    document.getElementById("loginErr").style.display="none";
+    hideAll();
+    document.getElementById("creatorView").classList.remove("hidden");
+    renderCreator();
+    window.scrollTo({top:0,behavior:"smooth"});
+  }else{
+    document.getElementById("loginErr").style.display="block";
+  }
+}
+function logout(){
+  sessionStorage.removeItem("slv4_auth");
+  document.getElementById("user").value="";
+  document.getElementById("pass").value="";
+  showBuyer();
+}
+function addProduct(){
+  const name=document.getElementById("prodName").value.trim();
+  const image=document.getElementById("prodImg").value.trim();
+  const price=parsePrice(document.getElementById("prodPrice").value);
+  const qty=Math.max(1,Number(document.getElementById("prodQty").value)||1);
+  if(!name||!price){alert("Preencha nome e preço do produto.");return}
+  products.push({id:Date.now()+Math.random(),name,image,price,qty});
+  ["prodName","prodImg","prodPrice"].forEach(id=>document.getElementById(id).value="");
+  document.getElementById("prodQty").value="1";renderCreator();
+}
+function removeProduct(id){products=products.filter(p=>p.id!==id);renderCreator()}
+function clearProducts(){if(confirm("Limpar todos os produtos deste carrinho?")){products=[];renderCreator()}}
+function renderCreator(){
+  document.getElementById("count").textContent=products.length+" itens";
+  document.getElementById("creatorTotal").textContent=money(total(products));
+  document.getElementById("creatorProducts").innerHTML=products.length?products.map(p=>`<div class="prod"><img class="thumb" src="${esc(img(p.image))}" onerror="this.src='${img("")}'"><div><b>${esc(p.name)}</b><div class="small">Qtd: ${p.qty}</div><div class="price">${money(p.price*p.qty)}</div></div><button class="trash" onclick="removeProduct(${p.id})">🗑</button></div>`).join(""):`<div class="empty">Nenhum produto adicionado.</div>`;
+  renderPreview();
+  renderCreatorCarts();
+  const cb=document.getElementById("cancelEditBtn");
+  if(cb)cb.classList.toggle("hidden",editingCartId===null);
+}
+
+function renderCreatorCarts(){
+  const el=document.getElementById("creatorCarts");
+  if(!el)return;
+  if(!carts.length){
+    el.innerHTML=`<div class="empty">Você ainda não criou nenhum carrinho.</div>`;
+    return;
+  }
+  el.innerHTML=carts.map(c=>`<div class="creatorSaved">
+    <div class="creatorSavedTop">
+      <div>
+        <div class="creatorSavedTitle">🛒 ${esc(c.name)}</div>
+        <div class="creatorSavedMeta">${c.products.length} produtos • Total ${money(c.total)}</div>
+      </div>
+      <span class="badge">PUBLICADO</span>
+    </div>
+    <div class="creatorSavedProducts">${c.products.slice(0,10).map(p=>`<img src="${esc(img(p.image))}" onerror="this.src='${img("")}'" title="${esc(p.name)}">`).join("")}</div>
+    <div class="creatorSavedMeta">Link da categoria: ${esc(c.categoryUrl)}</div>
+    <div class="creatorSavedButtons">
+      <button class="outline" onclick="editCart(${c.id})">✏️ Editar</button>
+      <button class="danger" onclick="deleteCart(${c.id})">🗑 Apagar</button>
+    </div>
+  </div>`).join("");
+}
+function renderPreview(){
+  const name=document.getElementById("cartName").value.trim()||"Meu carrinho";
+  const url=document.getElementById("categoryUrl").value.trim();
+  document.getElementById("creatorPreview").innerHTML=`<div class="cart-head"><h2>🛒 ${esc(name)}</h2><span>${products.length} itens</span></div>
+  <div class="items">${products.length?products.map(p=>`<div class="item"><img src="${esc(img(p.image))}" onerror="this.src='${img("")}'"><div><h3>${esc(p.name)}</h3><p>Quantidade: ${p.qty}</p><p class="bigprice">${money(p.price*p.qty)}</p></div></div>`).join(""):`<div class="empty">Adicione produtos para ver a prévia.</div>`}</div>
+  <div class="buybox"><div class="notice">⚠️ Todos os produtos pertencem a este carrinho. Ao comprar, selecione manualmente na Shopee os mesmos produtos mostrados aqui.</div><div class="total"><span>Total</span><strong>${money(total(products))}</strong></div><a class="buy buy-link" ${url?`href="${esc(url)}" target="_blank" rel="noopener noreferrer"`:`aria-disabled="true"`} style="display:block;text-align:center;text-decoration:none;${url?"":"pointer-events:none;opacity:.55"}">Comprar na Shopee</a></div>`;
+}
+["cartName","categoryUrl"].forEach(id=>document.getElementById(id).addEventListener("input",renderPreview));
+
+function saveCart(){
+  const name=document.getElementById("cartName").value.trim();
+  const categoryUrl=document.getElementById("categoryUrl").value.trim();
+  if(!name||!categoryUrl||!products.length){
+    alert("Informe o nome, o link da categoria/vitrine e adicione pelo menos um produto.");
+    return;
+  }
+
+  if(editingCartId!==null){
+    const i=carts.findIndex(x=>x.id===editingCartId);
+    if(i>=0){
+      carts[i]={...carts[i],name,categoryUrl,products:JSON.parse(JSON.stringify(products)),total:total(products),updatedAt:new Date().toISOString()};
+      localStorage.setItem("shopeeLinkV4Carts",JSON.stringify(carts));
+      alert("Carrinho atualizado com sucesso.");
+    }
+    editingCartId=null;
+  }else{
+    const cart={id:Date.now(),name,categoryUrl,products:JSON.parse(JSON.stringify(products)),total:total(products),createdAt:new Date().toISOString()};
+    carts.unshift(cart);
+    localStorage.setItem("shopeeLinkV4Carts",JSON.stringify(carts));
+    alert("Carrinho salvo e publicado na área dos compradores.");
+  }
+
+  document.getElementById("cartName").value="";
+  document.getElementById("categoryUrl").value="";
+  products=[];
+  const title=document.querySelector("#creatorView .hero h1");
+  if(title)title.textContent="CRIAR NOVO CARRINHO";
+  renderCreator();
+  renderBuyer();
+}
+function deleteCart(id){
+  const cart = carts.find(c => c.id === id);
+  if (!cart) return;
+  if (!confirm(`Excluir o carrinho "${cart.name || "sem nome"}"?\nEsta ação não poderá ser desfeita.`)) return;
+  carts = carts.filter(c => c.id !== id);
+  localStorage.setItem("shopeeLinkV4Carts", JSON.stringify(carts));
+  if (typeof renderCreatorCarts === "function") renderCreatorCarts();
+  if (typeof renderBuyerCarts === "function") renderBuyerCarts();
+  alert("Carrinho excluído com sucesso.");
+}
+let editingCartId=null;
+
+function editCart(id){
+  const c=carts.find(x=>x.id===id);
+  if(!c)return;
+  editingCartId=id;
+  document.getElementById("cartName").value=c.name;
+  document.getElementById("categoryUrl").value=c.categoryUrl;
+  products=JSON.parse(JSON.stringify(c.products));
+  renderCreator();
+  const title=document.querySelector("#creatorView .hero h1");
+  if(title)title.innerHTML='EDITAR CARRINHO <span class="editingBadge">MODO EDIÇÃO</span>';
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function cancelEdit(){
+  editingCartId=null;
+  document.getElementById("cartName").value="";
+  document.getElementById("categoryUrl").value="";
+  products=[];
+  const title=document.querySelector("#creatorView .hero h1");
+  if(title)title.textContent="CRIAR NOVO CARRINHO";
+  renderCreator();
+}
+
+function renderBuyer(){
+  const el=document.getElementById("buyerList");
+  if(!carts.length){el.innerHTML=`<div class="card empty" style="grid-column:1/-1">Nenhum carrinho publicado ainda.</div>`;return}
+  el.innerHTML=carts.map(c=>`<article class="saved">
+    <h3>🛒 ${esc(c.name)}</h3>
+    <div class="small">${c.products.length} produtos</div>
+    <div class="mini">${c.products.slice(0,6).map(p=>`<img src="${esc(img(p.image))}" onerror="this.src='${img("")}'" title="${esc(p.name)}">`).join("")}</div>
+    <div class="sum">Total: ${money(c.total)}</div>
+    <div class="small" style="margin-top:7px">Criado em ${new Date(c.createdAt).toLocaleDateString("pt-BR")}</div>
+    <div class="actions"><button class="outline" onclick="viewCart(${c.id})">Ver carrinho</button><a class="primary buy-action" href="${esc(c.categoryUrl)}" target="_blank" rel="noopener noreferrer">Comprar na Shopee</a></div>
+  </article>`).join("");
+}
+function viewCart(id){
+  const c=carts.find(x=>x.id===id);
+  if(!c)return;
+  hideAll();
+  const detail=document.getElementById("cartDetailView");
+  detail.classList.remove("hidden");
+  detail.innerHTML=`<div class="hero public-top">
+    <div><h1>${esc(c.name)}</h1><p>${c.products.length} produtos • Total ${money(c.total)}</p></div>
+    <button class="btn outline" onclick="backToBuyer()">← Voltar</button>
+  </div>
+  <div class="cart">
+    <div class="cart-head"><h2>🛒 Carrinho</h2><span>${c.products.length} itens</span></div>
+    <div class="items">${c.products.map(p=>`<div class="item">
+      <img src="${esc(img(p.image))}" onerror="this.src='${img("")}'">
+      <div><h3>${esc(p.name)}</h3><p>Quantidade: ${p.qty}</p><p>Preço: ${money(p.price)} cada</p></div>
+      <div class="bigprice">${money(p.price*p.qty)}</div>
+    </div>`).join("")}</div>
+    <div class="buybox">
+      <div class="notice"><b>⚠️ Aviso importante:</b> todos os produtos mostrados fazem parte deste carrinho. A Shopee não permite que este site preencha automaticamente o carrinho privado da sua conta. Ao entrar na Shopee, selecione manualmente os mesmos produtos na categoria/vitrine indicada.</div>
+      <div class="total"><span>Total dos produtos</span><strong>${money(c.total)}</strong></div>
+      <a class="buy buy-link" href="${esc(c.categoryUrl)}" target="_blank" rel="noopener noreferrer" style="display:block;text-align:center;text-decoration:none">Comprar na Shopee</a>
+      <div class="small" style="text-align:center;margin-top:9px">O botão tenta abrir o aplicativo oficial da Shopee no Android.</div>
+    </div>
+  </div>`;
+  history.pushState({screen:"cart",cartId:id},"",location.href.split("#")[0]+"#cart-"+id);
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function backToBuyer(){
+  if(location.hash.startsWith("#cart-")) history.replaceState({screen:"buyer"},"",location.href.split("#")[0]);
+  showBuyer();
+}
+window.addEventListener("popstate",()=>showBuyer());
+window.addEventListener("hashchange",()=>{
+  if(!location.hash.startsWith("#cart-") && !document.getElementById("buyerView").classList.contains("hidden")) return;
+  if(!location.hash.startsWith("#cart-")) showBuyer();
+});
+
+function openShopee(raw){
+  const u=(raw||"").trim();
+  if(!u){alert("Este carrinho ainda não tem link da Shopee.");return;}
+
+  let url;
+  try{
+    url=new URL(u);
+    if(!/^https?:$/.test(url.protocol)) throw new Error("protocol");
+  }catch(e){
+    alert("Link inválido. Cole o link completo da Shopee, começando com https://");
+    return;
+  }
+
+  // Smart Links/vitrines (como collshp.com) devem ser abertos como HTTPS.
+  // Forçar intent:// + pacote da Shopee pode impedir a abertura do link.
+  const httpsUrl=url.href;
+
+  // Navegação direta a partir do clique do usuário evita bloqueios de popup
+  // e preserva exatamente o endereço informado pelo criador.
+  try{
+    window.location.assign(httpsUrl);
+  }catch(e){
+    const a=document.createElement("a");
+    a.href=httpsUrl;
+    a.target="_blank";
+    a.rel="noopener noreferrer";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  }
+}
+
+function exportData(){
+  const blob=new Blob([JSON.stringify(carts,null,2)],{type:"application/json"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="shopee-link-v4-backup.json";a.click();URL.revokeObjectURL(a.href);
+}
+function importData(e){
+  const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!Array.isArray(d))throw 0;carts=d;localStorage.setItem("shopeeLinkV4Carts",JSON.stringify(carts));renderBuyer();alert("Backup importado.")}catch{alert("Arquivo de backup inválido.")}};r.readAsText(f);
+}
+showBuyer();
+if(sessionStorage.getItem("slv4_auth")==="1"){
+  // Keep the session, but start on the public buyer screen.
+}
+renderBuyer();
+</script>
+
+<script>
+(function(){
+  function closeMenus(){
+    document.querySelectorAll('.mobile-menu, .menu-dropdown').forEach(function(el){
+      if (el) el.style.display = 'none';
+    });
+  }
+  window.addEventListener('pageshow', closeMenus);
+  window.addEventListener('popstate', closeMenus);
+})();
+</script>
+
+</body>
+</html>

@@ -198,16 +198,11 @@ function initFirebase(){
         }));
         localStorage.setItem("shopeeLinkV4Carts",JSON.stringify(carts));
       }else{
-        // If the cloud is still empty but this browser already has carts, migrate them once.
-        const local=JSON.parse(localStorage.getItem("shopeeLinkV4Carts")||"[]");
-        if(Array.isArray(local) && local.length){
-          carts=local;
-          const seed={}; local.forEach(c=>{seed[String(c.id)]=c});
-          cartsRef.set(seed).catch(err=>console.error("Erro ao migrar carrinhos locais:",err));
-        }else{
-          carts=[];
-          localStorage.setItem("shopeeLinkV4Carts","[]");
-        }
+        // Firebase is the single source of truth. NEVER republish old localStorage
+        // automatically: another phone may still contain a stale copy, which could
+        // otherwise resurrect a cart that was intentionally deleted.
+        carts=[];
+        localStorage.setItem("shopeeLinkV4Carts","[]");
       }
       renderCreator();
       renderBuyer();
@@ -227,18 +222,23 @@ function initFirebase(){
   }
 }
 
-function cloudSave(){
+function cloudSaveCart(cart){
+  if(!firebaseReady || !cartsRef || !cart) return Promise.resolve();
+  // Write ONLY this cart. Never rewrite the whole collection on save.
+  // This prevents another old client snapshot from recreating a deleted cart.
+  cloudQueue=cloudQueue.catch(()=>{}).then(()=>cartsRef.child(String(cart.id)).set(cart));
+  return cloudQueue;
+}
+function cloudReplaceAll(list){
   if(!firebaseReady || !cartsRef) return Promise.resolve();
   const data={};
-  carts.forEach(c=>{data[String(c.id)]=c});
-  // Serialize writes so an older save can never arrive after a deletion
-  // and resurrect a cart that the creator already removed.
+  (Array.isArray(list)?list:[]).forEach(c=>{data[String(c.id)]=c});
   cloudQueue=cloudQueue.catch(()=>{}).then(()=>cartsRef.set(data));
   return cloudQueue;
 }
 function cloudDelete(id){
   if(!firebaseReady || !cartsRef) return Promise.resolve();
-  // Queue the deletion after every previous cloud write.
+  // Delete the exact Firebase child and wait for the server commit.
   cloudQueue=cloudQueue.catch(()=>{}).then(()=>cartsRef.child(String(id)).remove());
   return cloudQueue;
 }
@@ -320,16 +320,21 @@ function saveCart(){
  const name=document.getElementById("cartName").value.trim(),categoryUrl=document.getElementById("categoryUrl").value.trim();
  if(!name||!categoryUrl||!products.length){alert("Informe o nome, o link da Shopee e adicione pelo menos um produto.");return}
  const wasEditing = editingCartId!==null;
+ let savedCart=null;
  if(wasEditing){
-  const i=carts.findIndex(x=>x.id===editingCartId);if(i>=0)carts[i]={...carts[i],name,categoryUrl,products:JSON.parse(JSON.stringify(products)),total:total(products),updatedAt:new Date().toISOString()};
+  const i=carts.findIndex(x=>String(x.id)===String(editingCartId));
+  if(i>=0){
+   carts[i]={...carts[i],name,categoryUrl,products:JSON.parse(JSON.stringify(products)),total:total(products),updatedAt:new Date().toISOString()};
+   savedCart=carts[i];
+  }
   editingCartId=null;alert("Carrinho atualizado com sucesso.")
  }else{
-  const cart={id:Date.now(),number:nextNumber(),name,categoryUrl,products:JSON.parse(JSON.stringify(products)),total:total(products),createdAt:new Date().toISOString()};
-  carts.push(cart);alert("Carrinho Nº "+cart.number+" salvo com sucesso.")
+  savedCart={id:Date.now(),number:nextNumber(),name,categoryUrl,products:JSON.parse(JSON.stringify(products)),total:total(products),createdAt:new Date().toISOString()};
+  carts.push(savedCart);alert("Carrinho Nº "+savedCart.number+" salvo com sucesso.")
  }
  localStorage.setItem("shopeeLinkV4Carts",JSON.stringify(carts));
  document.getElementById("cartName").value="";document.getElementById("categoryUrl").value="";products=[];document.getElementById("creatorTitle").textContent="CRIAR NOVO CARRINHO";renderCreator();renderBuyer();
- cloudSave().then(()=>{
+ cloudSaveCart(savedCart).then(()=>{
    if(firebaseReady) alert(wasEditing ? "Carrinho atualizado online com sucesso." : "Carrinho publicado online com sucesso.");
  }).catch(e=>{
    console.error(e);
@@ -364,7 +369,7 @@ async function deleteCart(id){
  }
 }
 function exportData(){const blob=new Blob([JSON.stringify(carts,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="shopee-link-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
-function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!Array.isArray(d))throw 0;carts=d;normalizeNumbers();renderCreator();renderBuyer();cloudSave().then(()=>alert(firebaseReady?"Backup importado e publicado online.":"Backup importado."));}catch(err){alert("Arquivo de backup inválido.")}};r.readAsText(f)}
+function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!Array.isArray(d))throw 0;carts=d;normalizeNumbers();renderCreator();renderBuyer();cloudReplaceAll(carts).then(()=>alert(firebaseReady?"Backup importado e publicado online.":"Backup importado."));}catch(err){alert("Arquivo de backup inválido.")}};r.readAsText(f)}
 
 function openShopeeByUrl(raw){
  const u=String(raw||"").trim();if(!u){alert("Este carrinho ainda não tem link da Shopee.");return}

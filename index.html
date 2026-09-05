@@ -171,7 +171,8 @@ const FIREBASE_CONFIG = {
   measurementId: "G-SZKPD63W30"
 };
 
-let firebaseReady=false, db=null, cartsRef=null, cloudSyncing=false;
+let firebaseReady=false, db=null, cartsRef=null;
+let cloudQueue=Promise.resolve();
 
 function initFirebase(){
   if(!FIREBASE_CONFIG.databaseURL){
@@ -227,11 +228,19 @@ function initFirebase(){
 }
 
 function cloudSave(){
-  if(!firebaseReady) return Promise.resolve();
-  cloudSyncing=true;
+  if(!firebaseReady || !cartsRef) return Promise.resolve();
   const data={};
   carts.forEach(c=>{data[String(c.id)]=c});
-  return cartsRef.set(data).finally(()=>{cloudSyncing=false});
+  // Serialize writes so an older save can never arrive after a deletion
+  // and resurrect a cart that the creator already removed.
+  cloudQueue=cloudQueue.catch(()=>{}).then(()=>cartsRef.set(data));
+  return cloudQueue;
+}
+function cloudDelete(id){
+  if(!firebaseReady || !cartsRef) return Promise.resolve();
+  // Queue the deletion after every previous cloud write.
+  cloudQueue=cloudQueue.catch(()=>{}).then(()=>cartsRef.child(String(id)).remove());
+  return cloudQueue;
 }
 </script>
 <script>
@@ -330,16 +339,18 @@ function saveCart(){
 function editCart(id){const c=carts.find(x=>x.id===id);if(!c)return;editingCartId=id;document.getElementById("cartName").value=c.name;document.getElementById("categoryUrl").value=c.categoryUrl;products=JSON.parse(JSON.stringify(c.products));document.getElementById("creatorTitle").textContent="EDITAR CARRINHO Nº "+c.number;renderCreator();window.scrollTo({top:0,behavior:"smooth"})}
 function cancelEdit(){editingCartId=null;document.getElementById("cartName").value="";document.getElementById("categoryUrl").value="";products=[];document.getElementById("creatorTitle").textContent="CRIAR NOVO CARRINHO";renderCreator()}
 async function deleteCart(id){
- const c=carts.find(x=>x.id===id);
+ const c=carts.find(x=>String(x.id)===String(id));
  if(!c)return;
  if(!confirm(`Excluir o carrinho Nº ${c.number} — "${c.name}"?`))return;
- const oldCarts=carts;
- carts=carts.filter(x=>x.id!==id);
+ const oldCarts=carts.slice();
+ carts=carts.filter(x=>String(x.id)!==String(id));
  localStorage.setItem("shopeeLinkV4Carts",JSON.stringify(carts));
  renderCreator();renderBuyer();
  try{
    if(firebaseReady && cartsRef){
-     await cartsRef.child(String(id)).remove();
+     // IMPORTANT: remove this exact Firebase child and wait for the server.
+     // The queued operation prevents an older full-database save from bringing it back.
+     await cloudDelete(id);
      alert(`Carrinho Nº ${c.number} apagado com sucesso.`);
    }else{
      alert(`Carrinho Nº ${c.number} apagado com sucesso neste aparelho.`);

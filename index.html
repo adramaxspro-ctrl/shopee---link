@@ -138,6 +138,48 @@ input,textarea{width:100%;border:1px solid #ddd;border-radius:6px;padding:11px 1
 }
 </style>
 
+<style>
+/* ===== CORREÇÃO RESPONSIVA DA ÁREA DO CRIADOR ===== */
+html,body{width:100%;max-width:100%;overflow-x:hidden}
+img,video,iframe{max-width:100%}
+@media(max-width:850px){
+  .wrap{width:100%;max-width:100%;margin:14px 0;padding:0 12px}
+  .grid{display:block;width:100%}
+  .grid>div{width:100%;min-width:0}
+  .card,.hero,.cart{width:100%;max-width:100%;min-width:0}
+  .login{width:100%;padding:14px 12px}
+  .loginbox{width:100%;max-width:410px}
+  .row{flex-direction:column;gap:0}
+  .prod{grid-template-columns:52px minmax(0,1fr) auto;gap:9px}
+  .thumb{width:52px;height:52px}
+  .creatorSavedButtons{grid-template-columns:1fr 1fr}
+  .creatorSaved{min-width:0;overflow:hidden}
+  .creatorSavedTop{min-width:0}
+  .creatorSavedTop>div{min-width:0}
+  .creatorSavedMeta{overflow-wrap:anywhere}
+  .cart-head{padding:14px}
+  .items{width:100%;min-width:0}
+  .item{grid-template-columns:62px minmax(0,1fr);gap:10px;padding:13px 14px}
+  .item img{width:62px;height:62px}
+  .item>div{min-width:0}
+  .item h3{overflow-wrap:anywhere}
+  .buybox{padding:14px}
+  input,textarea{max-width:100%;font-size:16px}
+}
+@media(max-width:420px){
+  .top{height:58px;padding:0 10px}
+  .logo{font-size:20px;gap:6px}
+  .bag{width:28px;height:28px;font-size:16px}
+  .hero{padding:15px}
+  .hero h1{font-size:20px}
+  .card{padding:14px}
+  .card h2{font-size:16px}
+  .creatorSavedButtons{grid-template-columns:1fr}
+  .creatorSavedButtons button{width:100%}
+  .saved .actions{gap:7px}
+  .saved .actions button,.saved .actions .buy-action{height:54px;font-size:15px}
+}
+</style>
 </head>
 <body>
 <header class="top">

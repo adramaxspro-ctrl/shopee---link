@@ -408,7 +408,7 @@ function renderPreview(){
   const url=document.getElementById("categoryUrl").value.trim();
   document.getElementById("creatorPreview").innerHTML=`<div class="cart-head"><h2>🛒 ${esc(name)}</h2><span>${products.length} itens</span></div>
   <div class="items">${products.length?products.map(p=>`<div class="item"><img src="${esc(img(p.image))}" onerror="this.src='${img("")}'"><div><h3>${esc(p.name)}</h3><p>Quantidade: ${p.qty}</p><p class="bigprice">${money(p.price*p.qty)}</p></div></div>`).join(""):`<div class="empty">Adicione produtos para ver a prévia.</div>`}</div>
-  <div class="buybox"><div class="notice">⚠️ Todos os produtos pertencem a este carrinho. Ao comprar, selecione manualmente na Shopee os mesmos produtos mostrados aqui.</div><div class="total"><span>Total</span><strong>${money(total(products))}</strong></div><a class="buy buy-link" ${url?`href="${esc(url)}" target="_blank" rel="noopener noreferrer"`:`aria-disabled="true"`} style="display:block;text-align:center;text-decoration:none;${url?"":"pointer-events:none;opacity:.55"}">Comprar na Shopee</a></div>`;
+  <div class="buybox"><div class="notice">⚠️ Todos os produtos pertencem a este carrinho. Ao comprar, selecione manualmente na Shopee os mesmos produtos mostrados aqui.</div><div class="total"><span>Total</span><strong>${money(total(products))}</strong></div><button type="button" class="buy buy-link" ${url?`data-url="${esc(url)}" onclick="openShopee(this.dataset.url)"`:`disabled aria-disabled="true"`} style="display:block;text-align:center;text-decoration:none;${url?"":"opacity:.55"}">Comprar na Shopee</button></div>`;
 }
 ["cartName","categoryUrl"].forEach(id=>document.getElementById(id).addEventListener("input",renderPreview));
 
@@ -487,7 +487,7 @@ function renderBuyer(){
     <div class="mini">${c.products.slice(0,6).map(p=>`<img src="${esc(img(p.image))}" onerror="this.src='${img("")}'" title="${esc(p.name)}">`).join("")}</div>
     <div class="sum">Total: ${money(c.total)}</div>
     <div class="small" style="margin-top:7px">Criado em ${new Date(c.createdAt).toLocaleDateString("pt-BR")}</div>
-    <div class="actions"><button class="outline" onclick="viewCart(${c.id})">Ver carrinho</button><a class="primary buy-action" href="${esc(c.categoryUrl)}" target="_blank" rel="noopener noreferrer">Comprar na Shopee</a></div>
+    <div class="actions"><button class="outline" onclick="viewCart(${c.id})">Ver carrinho</button><button type="button" class="primary buy-action" data-url="${esc(c.categoryUrl)}" onclick="openShopee(this.dataset.url)">Comprar na Shopee</button></div>
   </article>`).join("");
 }
 function viewCart(id){
@@ -510,7 +510,7 @@ function viewCart(id){
     <div class="buybox">
       <div class="notice"><b>⚠️ Aviso importante:</b> todos os produtos mostrados fazem parte deste carrinho. A Shopee não permite que este site preencha automaticamente o carrinho privado da sua conta. Ao entrar na Shopee, selecione manualmente os mesmos produtos na categoria/vitrine indicada.</div>
       <div class="total"><span>Total dos produtos</span><strong>${money(c.total)}</strong></div>
-      <a class="buy buy-link" href="${esc(c.categoryUrl)}" target="_blank" rel="noopener noreferrer" style="display:block;text-align:center;text-decoration:none">Comprar na Shopee</a>
+      <button type="button" class="buy buy-link" data-url="${esc(c.categoryUrl)}" onclick="openShopee(this.dataset.url)" style="display:block;text-align:center;text-decoration:none">Comprar na Shopee</button>
       <div class="small" style="text-align:center;margin-top:9px">O botão tenta abrir o aplicativo oficial da Shopee no Android.</div>
     </div>
   </div>`;
@@ -528,35 +528,24 @@ window.addEventListener("hashchange",()=>{
 });
 
 function openShopee(raw){
-  const u=(raw||"").trim();
-  if(!u){alert("Este carrinho ainda não tem link da Shopee.");return;}
+  const u=String(raw||"").trim();
+  if(!u){alert("Este carrinho ainda não tem link da Shopee.");return false;}
 
   let url;
   try{
-    url=new URL(u);
+    url=new URL(u,location.href);
     if(!/^https?:$/.test(url.protocol)) throw new Error("protocol");
   }catch(e){
-    alert("Link inválido. Cole o link completo da Shopee, começando com https://");
-    return;
+    alert("Link inválido. No Área do Criador, cole o link completo da Shopee começando com https://");
+    return false;
   }
 
-  // Smart Links/vitrines (como collshp.com) devem ser abertos como HTTPS.
-  // Forçar intent:// + pacote da Shopee pode impedir a abertura do link.
-  const httpsUrl=url.href;
-
-  // Navegação direta a partir do clique do usuário evita bloqueios de popup
-  // e preserva exatamente o endereço informado pelo criador.
-  try{
-    window.location.assign(httpsUrl);
-  }catch(e){
-    const a=document.createElement("a");
-    a.href=httpsUrl;
-    a.target="_blank";
-    a.rel="noopener noreferrer";
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-  }
+  // Navegação no mesmo contexto: no Android, o sistema pode entregar o link
+  // ao aplicativo oficial da Shopee; se não houver app, abre no navegador.
+  // Evitamos target=_blank, que pode ser bloqueado ou tratado de forma
+  // diferente em alguns navegadores móveis.
+  window.location.href=url.href;
+  return false;
 }
 
 function exportData(){

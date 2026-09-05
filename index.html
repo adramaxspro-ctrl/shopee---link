@@ -329,7 +329,29 @@ function saveCart(){
 }
 function editCart(id){const c=carts.find(x=>x.id===id);if(!c)return;editingCartId=id;document.getElementById("cartName").value=c.name;document.getElementById("categoryUrl").value=c.categoryUrl;products=JSON.parse(JSON.stringify(c.products));document.getElementById("creatorTitle").textContent="EDITAR CARRINHO Nº "+c.number;renderCreator();window.scrollTo({top:0,behavior:"smooth"})}
 function cancelEdit(){editingCartId=null;document.getElementById("cartName").value="";document.getElementById("categoryUrl").value="";products=[];document.getElementById("creatorTitle").textContent="CRIAR NOVO CARRINHO";renderCreator()}
-function deleteCart(id){const c=carts.find(x=>x.id===id);if(!c)return;if(!confirm(`Excluir o carrinho Nº ${c.number} — "${c.name}"?`))return;carts=carts.filter(x=>x.id!==id);localStorage.setItem("shopeeLinkV4Carts",JSON.stringify(carts));renderCreator();renderBuyer();cloudSave().catch(e=>{console.error(e);alert("Não foi possível sincronizar a exclusão com a nuvem.")})}
+async function deleteCart(id){
+ const c=carts.find(x=>x.id===id);
+ if(!c)return;
+ if(!confirm(`Excluir o carrinho Nº ${c.number} — "${c.name}"?`))return;
+ const oldCarts=carts;
+ carts=carts.filter(x=>x.id!==id);
+ localStorage.setItem("shopeeLinkV4Carts",JSON.stringify(carts));
+ renderCreator();renderBuyer();
+ try{
+   if(firebaseReady && cartsRef){
+     await cartsRef.child(String(id)).remove();
+     alert(`Carrinho Nº ${c.number} apagado com sucesso.`);
+   }else{
+     alert(`Carrinho Nº ${c.number} apagado com sucesso neste aparelho.`);
+   }
+ }catch(e){
+   console.error("Erro ao apagar no Firebase:",e);
+   carts=oldCarts;
+   localStorage.setItem("shopeeLinkV4Carts",JSON.stringify(carts));
+   renderCreator();renderBuyer();
+   alert("Não foi possível apagar o carrinho online. Verifique as regras do Firebase e tente novamente.");
+ }
+}
 function exportData(){const blob=new Blob([JSON.stringify(carts,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="shopee-link-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
 function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!Array.isArray(d))throw 0;carts=d;normalizeNumbers();renderCreator();renderBuyer();cloudSave().then(()=>alert(firebaseReady?"Backup importado e publicado online.":"Backup importado."));}catch(err){alert("Arquivo de backup inválido.")}};r.readAsText(f)}
 
